@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:13
     ports:
-      - 5443:5443
+      - 5111:5432
     environment:
       POSTGRES_USER: amr
       POSTGRES_PASSWORD: 12345
@@ -11,7 +11,7 @@ services:
   test-db:
     image: postgres:13
     ports:
-      - 5442:5442
+      - 5112:5432
     environment:
       POSTGRES_USER: amr
       POSTGRES_PASSWORD: 12345

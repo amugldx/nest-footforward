@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ItemModule } from './item/item.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     PrismaModule,
     AuthModule,
     CloudinaryModule,
+    ItemModule,
   ],
   providers: [
     {

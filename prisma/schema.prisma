@@ -21,7 +21,61 @@ model User {
   hashedRt String?
   role     Role    @default(user)
 
+  cart Cart[]
+
   @@map("users")
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String @unique
+  fullname    String
+  size        Int[]
+  description String
+  price       Float
+  category    Category
+  brand       Brand
+  imageUrl String?
+  imageId String?
+
+  cart Cart? @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@map("items")
+  cartId Int?
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  items   Item[]
+
+  @@map("cart")
+}
+
+enum Category {
+  child
+  toddler
+  men
+  women
+  unisex
+}
+
+enum Brand {
+  jordan
+  nike
+  puma
+  reebok
+  vans
+  yeezy
+  adidas
+  new_balance
 }
 
 enum Role {

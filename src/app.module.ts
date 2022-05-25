@@ -6,6 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ItemModule } from './item/item.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ItemModule } from './item/item.module';
     AuthModule,
     CloudinaryModule,
     ItemModule,
+    CartModule,
   ],
   providers: [
     {

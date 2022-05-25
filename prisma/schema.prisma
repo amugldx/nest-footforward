@@ -42,9 +42,9 @@ model Item {
   imageId String?
 
   cart Cart? @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId Int?
 
   @@map("items")
-  cartId Int?
 }
 
 model Cart {

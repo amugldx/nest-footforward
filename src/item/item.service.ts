@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Item } from '@prisma/client';
+import { Category, Item, Brand } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
@@ -89,6 +89,45 @@ export class ItemService {
       throw new NotFoundException('Item does not exists');
     }
     return item;
+  }
+
+  async findCategory(category: Category) {
+    const categoryItems = await this.prisma.item.findMany({
+      where: {
+        category,
+      },
+    });
+    if (categoryItems.length === 0) {
+      throw new NotFoundException('Items does not exists');
+    }
+    return categoryItems;
+  }
+
+  async findSearch(name: string) {
+    const categoryItems = await this.prisma.item
+      .findUnique({
+        where: {
+          name,
+        },
+      })
+      .catch((error) => {
+        if (error) {
+          throw new NotFoundException('Item with given name does not found');
+        }
+      });
+    return categoryItems;
+  }
+
+  async findBrand(brand: Brand) {
+    const brandItems = await this.prisma.item.findMany({
+      where: {
+        brand,
+      },
+    });
+    if (brandItems.length === 0) {
+      throw new NotFoundException('Items does not exists');
+    }
+    return brandItems;
   }
 
   async update(id: number, dto: Partial<CreateItemDto>) {

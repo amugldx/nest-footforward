@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, NotFoundException } from '@nestjs/common';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -36,19 +36,38 @@ export class CartService {
     return cart;
   }
 
-  findAll() {
-    return `This action returns all cart`;
+  async findAll() {
+    const allCarts = await this.prisma.cart.findMany();
+    if (allCarts.length === 0) {
+      throw new NotFoundException('cart is empty');
+    }
+    return allCarts;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
+  async findOne(id: number) {
+    const cartItem = await this.prisma.cart.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!cartItem) {
+      throw new NotFoundException('No cart item found with given id');
+    }
+    return cartItem;
   }
 
-  // update(id: number, updateCartDto: UpdateCartDto) {
-  //   return `This action updates a #${id} cart`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+  async remove(id: number) {
+    await this.prisma.cart
+      .delete({
+        where: {
+          id,
+        },
+      })
+      .catch((error) => {
+        if (error) {
+          throw new NotFoundException('Cart with given id does not exists');
+        }
+      });
+    return true;
   }
 }

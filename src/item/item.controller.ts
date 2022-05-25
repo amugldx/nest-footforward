@@ -22,8 +22,8 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Item, Role } from '@prisma/client';
-import { Roles } from 'src/common/decorators';
+import { Item, Role, Category, Brand } from '@prisma/client';
+import { Public, Roles } from 'src/common/decorators';
 import { AdminGuard } from 'src/common/guards';
 import { CreateItemDto } from './dto';
 import { ItemService } from './item.service';
@@ -67,6 +67,31 @@ export class ItemController {
     return this.itemService.create(createItemDto);
   }
 
+  @Public()
+  @HttpCode(HttpStatus.FOUND)
+  @ApiCreatedResponse({ description: 'Item with category Found' })
+  @Get('category/:category')
+  findCategory(@Param('category') category: Category) {
+    return this.itemService.findCategory(category);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.FOUND)
+  @ApiCreatedResponse({ description: 'Item with given search Found' })
+  @Get('search/:search')
+  findSearch(@Param('search') search: string) {
+    return this.itemService.findSearch(search);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.FOUND)
+  @ApiCreatedResponse({ description: 'Item with given brand Found' })
+  @Get('brand/:brand')
+  findBrand(@Param('brand') brand: Brand) {
+    return this.itemService.findBrand(brand);
+  }
+
+  @Public()
   @HttpCode(HttpStatus.FOUND)
   @ApiFoundResponse({ description: 'All items recieved' })
   @Get()
@@ -74,6 +99,7 @@ export class ItemController {
     return this.itemService.findAll();
   }
 
+  @Public()
   @HttpCode(HttpStatus.FOUND)
   @ApiFoundResponse({ description: 'Item with given id recieved' })
   @Get(':id')

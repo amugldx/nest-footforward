@@ -70,6 +70,25 @@ export class AuthService {
     return tokens;
   }
 
+  async signinAd(dto: Partial<AuthDto>): Promise<Tokens> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: dto.username,
+      },
+    });
+
+    if (!user) throw new ForbiddenException('Access Denied');
+    if (user.role === Role.user) throw new ForbiddenException('Access Denied');
+
+    const passwordMatches = await argon.verify(user.hash, dto.password);
+    if (!passwordMatches) throw new ForbiddenException('Access Denied');
+
+    const tokens = await this.getTokens(user.id, user.email, user.role);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+
+    return tokens;
+  }
+
   async signinEmail(dto: Partial<AuthDto>): Promise<Tokens> {
     const user = await this.prisma.user.findUnique({
       where: {

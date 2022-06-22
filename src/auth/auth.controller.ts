@@ -145,6 +145,40 @@ export class AuthController {
     return false;
   }
 
+  @Public()
+  @Post('signin/ad')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ description: 'Admin Login by username' })
+  @ApiUnauthorizedResponse({ description: 'Invalid Credentials' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        username: { type: 'string' },
+        password: { type: 'string' },
+      },
+    },
+  })
+  async signinAd(
+    @Body() dto: Partial<AuthDto>,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<boolean> {
+    const tokens = await this.authService.signinAd(dto);
+    if (tokens) {
+      this.setCookies('FootforwardJwtAt', tokens.access_token, 15, response);
+      this.setCookies(
+        'FootforwardJwtRt',
+        tokens.refresh_token,
+        21600,
+        response,
+      );
+      this.setFootforwardCookie(response);
+      this.setAdminCookie(response);
+      return true;
+    }
+    return false;
+  }
+
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ description: 'User loged out' })
@@ -230,6 +264,15 @@ export class AuthController {
     const date = new Date();
     date.setTime(date.getTime() + 15 * 60 * 1000);
     response.cookie('FootforwardLogged', true, {
+      domain: this.configService.get('FRONTEND_DOMAIN'),
+      expires: date,
+    });
+  }
+
+  setAdminCookie(response: Response) {
+    const date = new Date();
+    date.setTime(date.getTime() + 15 * 60 * 1000);
+    response.cookie('FootforwardIsAdmin', true, {
       domain: this.configService.get('FRONTEND_DOMAIN'),
       expires: date,
     });

@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -15,7 +16,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   GetCurrentUser,
   GetCurrentUserId,
@@ -202,6 +203,7 @@ export class AuthController {
     @GetCurrentUserId() userId: number,
     @GetCurrentUser('refreshToken') refreshToken: string,
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
   ): Promise<boolean> {
     const tokens = await this.authService.refreshTokens(userId, refreshToken);
     if (tokens) {
@@ -213,6 +215,9 @@ export class AuthController {
         response,
       );
       this.setFootforwardCookie(response);
+      if (request.cookies.FootforwardIsAdmin === true) {
+        this.setAdminCookie(response);
+      }
       return true;
     }
     return true;
@@ -255,6 +260,10 @@ export class AuthController {
       domain: this.configService.get('FRONTEND_DOMAIN'),
     });
     response.cookie('FootforwardLogged', '', {
+      domain: this.configService.get('FRONTEND_DOMAIN'),
+      expires: date,
+    });
+    response.cookie('FootforwardIsAdmin', '', {
       domain: this.configService.get('FRONTEND_DOMAIN'),
       expires: date,
     });

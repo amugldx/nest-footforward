@@ -215,7 +215,7 @@ export class AuthController {
         response,
       );
       this.setFootforwardCookie(response);
-      if (request.cookies.FootforwardIsAdmin === true) {
+      if (request.cookies.FootforwardIsAdmin) {
         this.setAdminCookie(response);
       }
       return true;

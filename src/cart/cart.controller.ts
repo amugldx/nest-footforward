@@ -37,14 +37,14 @@ export class CartController {
     return this.cartService.create(userId, dto);
   }
 
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.OK)
   @ApiFoundResponse({ description: 'All cart items recieved' })
   @Get()
   findAll() {
     return this.cartService.findAll();
   }
 
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.OK)
   @ApiFoundResponse({ description: 'Cart with given id recieved' })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {

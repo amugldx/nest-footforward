@@ -68,7 +68,7 @@ export class ItemController {
   }
 
   @Public()
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({ description: 'Item with category Found' })
   @Get('category/:category')
   findCategory(@Param('category') category: Category) {
@@ -76,7 +76,7 @@ export class ItemController {
   }
 
   @Public()
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({ description: 'Item with given search Found' })
   @Get('search/:search')
   findSearch(@Param('search') search: string) {
@@ -84,7 +84,7 @@ export class ItemController {
   }
 
   @Public()
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({ description: 'Item with given brand Found' })
   @Get('brand/:brand')
   findBrand(@Param('brand') brand: Brand) {
@@ -92,7 +92,7 @@ export class ItemController {
   }
 
   @Public()
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.OK)
   @ApiFoundResponse({ description: 'All items recieved' })
   @Get()
   findAll() {
@@ -100,7 +100,7 @@ export class ItemController {
   }
 
   @Public()
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.OK)
   @ApiFoundResponse({ description: 'Item with given id recieved' })
   @Get(':id')
   findOne(@Param('id') id: string) {

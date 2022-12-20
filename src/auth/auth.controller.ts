@@ -43,6 +43,7 @@ export class AuthController {
   async signup(
     @Body() dto: AuthDto,
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
   ): Promise<boolean> {
     const tokens = await this.authService.signup(dto);
     if (tokens) {
@@ -53,7 +54,7 @@ export class AuthController {
         21600,
         response,
       );
-      this.setFootforwardCookie(response);
+      this.setFootforwardCookie(response, request);
       return true;
     }
     return false;
@@ -67,6 +68,7 @@ export class AuthController {
   async signupAd(
     @Body() dto: AuthDto,
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
   ): Promise<boolean> {
     const tokens = await this.authService.signupAd(dto);
     if (tokens) {
@@ -77,7 +79,7 @@ export class AuthController {
         21600,
         response,
       );
-      this.setFootforwardCookie(response);
+      this.setFootforwardCookie(response, request);
       return true;
     }
     return false;
@@ -97,6 +99,7 @@ export class AuthController {
   async signinEmail(
     @Body() dto: Partial<AuthDto>,
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
   ): Promise<boolean> {
     const tokens = await this.authService.signinEmail(dto);
     if (tokens) {
@@ -107,7 +110,7 @@ export class AuthController {
         21600,
         response,
       );
-      this.setFootforwardCookie(response);
+      this.setFootforwardCookie(response, request);
       return true;
     }
     return false;
@@ -130,6 +133,7 @@ export class AuthController {
   async signinUsername(
     @Body() dto: Partial<AuthDto>,
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
   ): Promise<boolean> {
     const tokens = await this.authService.signinUsername(dto);
     if (tokens) {
@@ -140,7 +144,7 @@ export class AuthController {
         21600,
         response,
       );
-      this.setFootforwardCookie(response);
+      this.setFootforwardCookie(response, request);
       return true;
     }
     return false;
@@ -163,6 +167,7 @@ export class AuthController {
   async signinAd(
     @Body() dto: Partial<AuthDto>,
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
   ): Promise<boolean> {
     const tokens = await this.authService.signinAd(dto);
     if (tokens) {
@@ -173,8 +178,8 @@ export class AuthController {
         21600,
         response,
       );
-      this.setFootforwardCookie(response);
-      this.setAdminCookie(response);
+      this.setFootforwardCookie(response, request);
+      this.setAdminCookie(response, request);
       return true;
     }
     return false;
@@ -214,9 +219,9 @@ export class AuthController {
         21600,
         response,
       );
-      this.setFootforwardCookie(response);
+      this.setFootforwardCookie(response, request);
       if (request.cookies.FootforwardIsAdmin) {
-        this.setAdminCookie(response);
+        this.setAdminCookie(response, request);
       }
       return true;
     }
@@ -269,21 +274,25 @@ export class AuthController {
     });
   }
 
-  setFootforwardCookie(response: Response) {
-    const date = new Date();
-    date.setTime(date.getTime() + 15 * 60 * 1000);
-    response.cookie('FootforwardLogged', true, {
-      domain: this.configService.get('FRONTEND_DOMAIN'),
-      expires: date,
-    });
+  setFootforwardCookie(response: Response, request: Request) {
+    if (request.cookies['FootforwardJwtRt']) {
+      const date = new Date();
+      date.setTime(date.getTime() + 15 * 60 * 1000);
+      response.cookie('FootforwardLogged', true, {
+        domain: this.configService.get('FRONTEND_DOMAIN'),
+        expires: date,
+      });
+    }
   }
 
-  setAdminCookie(response: Response) {
-    const date = new Date();
-    date.setTime(date.getTime() + 15 * 60 * 1000);
-    response.cookie('FootforwardIsAdmin', true, {
-      domain: this.configService.get('FRONTEND_DOMAIN'),
-      expires: date,
-    });
+  setAdminCookie(response: Response, request: Request) {
+    if (request.cookies['FootforwardJwtRt']) {
+      const date = new Date();
+      date.setTime(date.getTime() + 15 * 60 * 1000);
+      response.cookie('FootforwardIsAdmin', true, {
+        domain: this.configService.get('FRONTEND_DOMAIN'),
+        expires: date,
+      });
+    }
   }
 }

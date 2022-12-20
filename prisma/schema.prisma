@@ -31,17 +31,17 @@ model Item {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name        String @unique
+  name        String   @unique
   fullname    String
   size        Int[]
   description String
   price       Float
   category    Category
   brand       Brand
-  imageUrl String?
-  imageId String?
+  imageUrl    String?
+  imageId     String?
 
-  cart Cart? @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cart   Cart? @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId Int?
 
   @@map("items")
@@ -54,7 +54,7 @@ model Cart {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  items   Item[]
+  items  Item[]
 
   @@map("cart")
 }
